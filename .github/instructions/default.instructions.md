@@ -10,7 +10,6 @@ applyTo: '**'
   - Use Clean Architecture: separate `presentation`, `domain`, and `data` layers.  
   - Organize folders: `lib`, `assets`, `test`, etc.  
   - Each **Controller** must be placed in its own folder.  
-    - Example: `lib/presentation/controller/profile/`  
     - The folder may contain both the controller and its binding file.  
     - If a controller is created as a sub-controller of another, it must reside in the same folder as the main controller.
 
@@ -160,6 +159,11 @@ applyTo: '**'
 - **Utility Functions:**  
   - Store helper functions in `lib/presentation/util`
 
+- **Pages:**  
+  - All page files must be placed in `lib/presentation/page`  
+  - Each page must follow the structure: one page = one file  
+  - Page must extend `GetView<Controller>` and be paired with its controller and binding
+
 - **Controller & Binding:**  
   - Each controller must be placed in its own folder.  
   - Binding file should be placed alongside the controller.  
@@ -167,6 +171,12 @@ applyTo: '**'
 
 - **Enums:**  
   - Store all enums in `lib/core/enum`
+
+### 🔁 Reuse Before Create
+
+- Before creating any new **function**, **widget**, or **utility**, always check if an existing one already serves the purpose  
+- If a reusable component exists, use or extend it instead of duplicating logic  
+- If no suitable component is found, you may create a new one following naming and folder conventions
 
 - **Best Practices:**  
   - Use snake_case for file names.  
@@ -207,12 +217,11 @@ To make managing constants and settings across your app more organized, separate
 - Includes the path or URL of all images used in the app.
 - Used for systematically accessing assets or network images.
 
-### 📁 lib/core/config/app_config
+### 📁 lib/core/config/app_config.dart
 - Includes common constants and settings such as API endpoints, timeout durations, and more. 
 - Used for app-wide settings.
 
---- 
-**Note:** 
+--- **Note:** 
 - Keep dependencies up to date and minimal. 
 - Encourage code reviews and collaboration. 
 - Integrate analytics for user behavior and app performance. 
