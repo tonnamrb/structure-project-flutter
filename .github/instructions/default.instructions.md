@@ -2,15 +2,15 @@
 applyTo: '**'
 ---
 
-# Project Development Instructions
+# 📱 Project Development Instructions
 
 ## 1. Core Architecture & Technologies
 
 - **Project Structure:**  
-  - Use Clean Architecture: separate `presentation`, `domain`, and data layers.  
+  - Use Clean Architecture: separate `presentation`, `domain`, and `data` layers.  
   - Organize folders: `lib`, `assets`, `test`, etc.  
   - Each **Controller** must be placed in its own folder.  
-    - Example: lib/presentation/controller/profile/  
+    - Example: `lib/presentation/controller/profile/`  
     - The folder may contain both the controller and its binding file.  
     - If a controller is created as a sub-controller of another, it must reside in the same folder as the main controller.
 
@@ -18,13 +18,13 @@ applyTo: '**'
   - Use the latest stable versions of Flutter and Dart.  
   - **State Management:**  
     - Use GetX exclusively for state, navigation, and dependency injection (DI).  
-    - **Best Practice:** Always call Get.put(Controller()) before using a new controller.  
+    - Always call `Get.put(Controller())` before using a new controller.  
     - Access controllers via `Get.find<Controller>()`.  
     - Every controller must have a corresponding **Binding file** to define its injection.  
       - This helps identify which controllers are available for use in each route or module.  
   - **Reactive Updates:**  
-    - Use Rx types for real-time value updates, such as `RxBool`, `RxList`, `RxInt`, etc.  
-    - Use RxStatus to represent and manage response states (e.g., loading, success, error).  
+    - Use `Rx` types for real-time value updates, such as `RxBool`, `RxList`, `RxInt`, etc.  
+    - Use `RxStatus` to represent and manage response states (e.g., loading, success, error).  
   - **Localization:** Use GetX for multi-language support.  
   - **Theming:**  
     - Implement light and dark themes with GetX.  
@@ -53,17 +53,17 @@ applyTo: '**'
   - Set up pipelines (e.g., GitHub Actions, Bitrise, Codemagic) for automated testing and deployment.
 
 - **Code Linting & Formatting:**  
-  - Enforce code style using flutter_lints or custom lint rules.  
-  - Use dart format and dart analyze in your workflow.
+  - Enforce code style using `flutter_lints` or custom lint rules.  
+  - Use `dart format` and `dart analyze` in your workflow.
 
 - **Secrets Management:**  
-  - Never hardcode secrets (API keys, tokens). Use .env files or a secrets manager.
+  - Never hardcode secrets (API keys, tokens). Use `.env` files or a secrets manager.
 
 - **App Versioning:**  
-  - Use semantic versioning and update pubspec.yaml accordingly.
+  - Use semantic versioning and update `pubspec.yaml` accordingly.
 
 - **App Icon & Splash Screen:**  
-  - Configure using flutter_launcher_icons and `flutter_native_splash`.
+  - Configure using `flutter_launcher_icons` and `flutter_native_splash`.
 
 ## 2. User Interface & Navigation
 
@@ -86,24 +86,23 @@ applyTo: '**'
 ### 📌 Page & Controller Binding Rules
 
 - Every time a new **Page** is created, a corresponding **Controller** must be created.  
-- Pages must extend GetView<Controller> only.  
-  - Do not use StatelessWidget or StatefulWidget directly for pages.  
+- Pages must extend `GetView<Controller>` only.  
+  - Do not use `StatelessWidget` or `StatefulWidget` directly for pages.  
   - Controller must be injected using `Get.put(Controller())`.  
-  - Access controller only via controller property in `GetView`.
+  - Access controller only via `controller` property in `GetView`.
 
 - If a page requires **multiple controllers**:  
-  - Use Get.find<OtherController>() **inside the main controller only**.  
-  - Do not call Get.find or Get.put inside the page.  
+  - Use `Get.find<OtherController>()` **inside the main controller only**.  
+  - Do not call `Get.find` or `Get.put` inside the page.  
   - The page should only interact with the controller bound via `GetView`.
 
 - Every controller must have a **Binding file** to define its injection logic.  
-  - This ensures clarity on which controllers are available for each route.  
   - Binding and controller may reside in the same folder.
 
 ## 3. Asset & Data Management
 
 - **Image Assets:**  
-  - Store all images in assets/images (use subfolders as needed).  
+  - Store all images in `assets/images` (use subfolders as needed).  
   - Reference images in `pubspec.yaml`.  
   - Optimize images for performance.
 
@@ -153,21 +152,21 @@ applyTo: '**'
 ## 5. File Organization Guidelines
 
 - **Widget Components:**  
-  - Store reusable widgets in lib/presentation/widget  
-  - Example: `custom_button.dart`, profile_card.dart
+  - Store reusable widgets in `lib/presentation/widget`
 
 - **Navigation:**  
-  - Store navigation-related files in lib/presentation/nav  
-  - Example: `app_routes.dart`, nav_controller.dart
+  - Store navigation-related files in `lib/presentation/nav`
 
 - **Utility Functions:**  
-  - Store helper functions in lib/presentation/util  
-  - Example: `date_utils.dart`, image_helper.dart
+  - Store helper functions in `lib/presentation/util`
 
 - **Controller & Binding:**  
   - Each controller must be placed in its own folder.  
   - Binding file should be placed alongside the controller.  
   - Sub-controllers must reside in the same folder as their parent controller.
+
+- **Enums:**  
+  - Store all enums in `lib/core/enum`
 
 - **Best Practices:**  
   - Use snake_case for file names.  
@@ -178,10 +177,7 @@ applyTo: '**'
 
 - **Test Structure:**  
   - Every time a new **function**, **widget**, or **page** is created, write corresponding **unit test** or **widget test**.  
-  - Organize tests in the test/ folder, mirroring the structure of the lib/ folder.  
-    - Example:  
-      - lib/presentation/widget/custom_button.dart → test/presentation/widget/custom_button_test.dart  
-      - lib/domain/usecases/login_usecase.dart → test/domain/usecases/login_usecase_test.dart
+  - Organize tests in the `test/` folder, mirroring the structure of the `lib/` folder.
 
 - **Test Types:**  
   - **Unit Test:** For business logic and pure functions  
@@ -189,8 +185,8 @@ applyTo: '**'
   - **Integration Test (optional):** For flows involving multiple components
 
 - **Best Practices:**  
-  - Use _test.dart suffix for all test files  
-  - Use `flutter_test`, `mocktail`, and get_test for assertions and mocking  
+  - Use `_test.dart` suffix for all test files  
+  - Use `flutter_test`, `mocktail`, and `get_test` for assertions and mocking  
   - Cover both success and failure scenarios  
   - Include test execution in CI/CD pipeline
 
@@ -199,10 +195,19 @@ applyTo: '**'
   - Update tests when logic or UI changes  
   - Avoid relying on external APIs—use mocks instead
 
----
+## 7. App Configuration Files (`lib/core/config`)
 
-**Note:**  
-- Keep dependencies up to date and minimal.  
-- Encourage code reviews and collaboration.  
-- Integrate analytics for user behavior and app performance.  
-- Regularly update documentation and README files.
+To make managing constants and settings across your app more organized, separate your config file into three main sections:
+
+### 📁 lib/core/config/app_color.dart
+- Include the same color values ​​as the app, such as the main, accent, background, and buttons.
+- ThemeData and general styling.
+
+### 📁 lib/core/config/app_image.dart
+- Includes the path or URL of all images used in the app.
+- Used for systematically accessing assets or network images.
+
+### 📁 lib/core/config/app_config
+- Includes common constants and settings such as API endpoints, timeout durations, and more. - Used for app-wide settings.
+
+--- **Note:** - Keep dependencies up to date and minimal. - Encourage code reviews and collaboration. - Integrate analytics for user behavior and app performance. - Regularly update documentation and README files.
