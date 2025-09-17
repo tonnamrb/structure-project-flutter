@@ -208,6 +208,12 @@ To make managing constants and settings across your app more organized, separate
 - Used for systematically accessing assets or network images.
 
 ### 📁 lib/core/config/app_config
-- Includes common constants and settings such as API endpoints, timeout durations, and more. - Used for app-wide settings.
+- Includes common constants and settings such as API endpoints, timeout durations, and more. 
+- Used for app-wide settings.
 
---- **Note:** - Keep dependencies up to date and minimal. - Encourage code reviews and collaboration. - Integrate analytics for user behavior and app performance. - Regularly update documentation and README files.
+--- 
+**Note:** 
+- Keep dependencies up to date and minimal. 
+- Encourage code reviews and collaboration. 
+- Integrate analytics for user behavior and app performance. 
+- Regularly update documentation and README files.
