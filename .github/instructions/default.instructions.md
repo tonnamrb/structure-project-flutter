@@ -26,18 +26,21 @@ applyTo: '**'
     - Use `RxStatus` to represent and manage response states (e.g., loading, success, error).  
   - **Localization:** Use GetX for multi-language support.  
   - **Theming:**  
-    - Implement light and dark themes with GetX.  
-    - **Project Color Theme:**  
-      - **Primary color:** White & Blue  
-      - **Button color:** Blue (#2196F3)  
-      - **Dark mode button color:** Light Grey (#E0E0E0)  
-      - **Background:** White (light mode), very light grey or dark blue (dark mode)  
+    - Implement light and dark themes with GetX.
     - **Font:**  
       - Use a custom font ('Kanit' or similar) for all text.  
       - **Header:** Font size 24–32, bold  
       - **Content:** Font size 16–18, regular  
       - **Button:** Font size 18–20, medium/bold  
       - Set the font and size in ThemeData and on every page.  
+    - **App Color Theme:**  
+      - Start with a **neutral Boot Theme (black/white)** not tied to spec or wireframe yet.  
+      - Define **Light** and **Dark** themes in `app_color.dart`.  
+      - All colors must be declared as **semantic tokens** (e.g., `buttonBg`, `onButton`, `textFieldFill`, `toastBg`) and used via tokens only.  
+      - Do not hardcode colors in widgets or tie them to IDs.  
+      - When hi-fi wireframes are available, only token values in `app_color.dart` should change.  
+      - Ensure tokens cover: background, text, buttons, textfields, toast/snackbar, dividers, and state colors (success, warning, error, info).  
+
   - **API:** Use Dio for all network operations.  
   - **Icons:** Use fluttericon and cupertino_icons.  
   - **Platform Support:** Must work on iOS, Android, and Web.  
@@ -148,6 +151,11 @@ applyTo: '**'
 - **Analytics & Monitoring:**  
   - Integrate analytics (e.g., Firebase Analytics) and error monitoring (e.g., Sentry, Crashlytics).
 
+- **[New Rule: Theming Enforcement]**  
+  - All new UI code must use colors only through tokens in `app_color.dart`.  
+  - No direct `Color(...)` usage in widgets.  
+  - Add **theme snapshot tests** to validate consistency across light/dark modes.
+
 ## 5. File Organization Guidelines
 
 - **Widget Components:**  
@@ -198,12 +206,14 @@ applyTo: '**'
   - Use `_test.dart` suffix for all test files  
   - Use `flutter_test`, `mocktail`, and `get_test` for assertions and mocking  
   - Cover both success and failure scenarios  
-  - Include test execution in CI/CD pipeline
+  - Include test execution in CI/CD pipeline  
 
 - **Coverage & Maintenance:**  
   - Target >80% test coverage before release  
   - Update tests when logic or UI changes  
-  - Avoid relying on external APIs—use mocks instead
+  - Avoid relying on external APIs—use mocks instead  
+  - **[New Rule: Theme Tests]**  
+    - Add snapshot tests for light/dark mode (button, textfield, toast) to ensure no regressions when tokens are updated.
 
 ## 7. App Configuration Files (`lib/core/config`)
 
@@ -212,6 +222,11 @@ To make managing constants and settings across your app more organized, separate
 ### 📁 lib/core/config/app_color.dart
 - Include the same color values ​​as the app, such as the main, accent, background, and buttons.
 - ThemeData and general styling.
+- **[New Rule: Semantic Tokens]**  
+  - Define tokens for surfaces, text, buttons, textfields, toast/snackbar, dividers, and state colors.  
+  - Provide `AppTheme.light` and `AppTheme.dark` mapped to `AppColors.light` and `AppColors.dark`.  
+  - Default values should be **neutral black/white/gray** until hi-fi wireframes are available.  
+  - Future updates should change only token values, not widget code.
 
 ### 📁 lib/core/config/app_image.dart
 - Includes the path or URL of all images used in the app.
