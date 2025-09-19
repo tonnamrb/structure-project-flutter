@@ -1,0 +1,72 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "flutter test (fast)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo", "-NoProfile", "-Command",
+        "flutter test --concurrency 8 --no-pub"
+      ],
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "dart analyze (fast)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo", "-NoProfile", "-Command",
+        "dart analyze --no-fatal-infos"
+      ],
+      "group": "build",
+      "presentation": { "reveal": "never", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter pub get (offline if possible)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo", "-NoProfile", "-Command",
+        "$err=0; flutter pub get --offline 2>$null; if($LASTEXITCODE -ne 0){ flutter pub get }"
+      ],
+      "presentation": { "reveal": "silent", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "android build apk (fast)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo", "-NoProfile", "-Command",
+        "flutter build apk --release --no-tree-shake-icons --split-per-abi"
+      ],
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "android build appbundle (fast)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo", "-NoProfile", "-Command",
+        "flutter build appbundle --release --no-tree-shake-icons"
+      ],
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter clean (quick)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [ "-NoLogo", "-NoProfile", "-Command", "flutter clean" ],
+      "presentation": { "reveal": "never", "panel": "dedicated" },
+      "problemMatcher": []
+    }
+  ]
+}

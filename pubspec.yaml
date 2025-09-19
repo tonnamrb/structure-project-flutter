@@ -1,0 +1,40 @@
+name: structure_project_flutter
+description: "Alumni Management registration experience for UC-01"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  get: ^4.6.6
+  dio: ^5.7.0
+  shared_preferences: ^2.3.3
+  get_storage: ^2.1.1
+  form_field_validator: ^1.1.0
+  cached_network_image: ^3.4.1
+  google_fonts: ^6.2.1
+  flutter_dotenv: ^5.1.0
+  json_annotation: ^4.9.0
+  intl: ^0.19.0
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.12
+  json_serializable: ^6.9.2
+  mocktail: ^1.0.3
+  get_test: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+  fonts: []

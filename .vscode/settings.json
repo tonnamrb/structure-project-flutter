@@ -1,0 +1,26 @@
+{
+  "terminal.integrated.profiles": {
+    "PowerShell7": {
+      "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    },
+    "Windows PowerShell": {
+      "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    },
+    "Command Prompt": {
+      "path": "C:\\WINDOWS\\System32\\cmd.exe"
+    },
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+    },
+    "Ubuntu (WSL)": {
+      "path": "C:\\WINDOWS\\System32\\wsl.exe"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell7",
+  "terminal.integrated.env.windows": {
+  "POWERSHELL_TELEMETRY_OPTOUT": "1",
+  "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+  "FLUTTER_SUPPRESS_ANALYTICS": "true",
+  "PUB_ENVIRONMENT": "vscode"
+}
+}
