@@ -193,6 +193,24 @@
 
 ### Shared Widgets
 
+**WG-01 (Popup: Google Sign-In Consent)**
+
+* ข้อความ:
+
+  * Header: `"Re:Play" wants to use "Google.com" to Sign Up`
+
+  * Subtext: `This allows the app and website to share information about you`
+
+* ไอคอน: ไม่มี
+
+* ตำแหน่ง: กลางหน้าจอแบบ overlay
+
+* ปุ่ม:
+
+  * Cancel (ซ้าย)
+
+  * Continue (ขวา)
+  
 - **WG-02 (Toast: สำเร็จ)**
   - ข้อความ: "Signed up!"
   - ไอคอน: icon-placeholder

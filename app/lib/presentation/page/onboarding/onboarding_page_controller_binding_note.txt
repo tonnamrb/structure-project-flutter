@@ -1,0 +1,1 @@
+Note: This is a placeholder to keep folder visible; actual binding is in onboarding_binding.dart
