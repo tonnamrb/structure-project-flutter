@@ -15,12 +15,37 @@ applyTo: '**'
 
 - **Frameworks & Libraries:**  
   - Use the latest stable versions of Flutter and Dart.  
-  - **State Management:**  
-    - Use GetX exclusively for state, navigation, and dependency injection (DI).  
-    - Always call `Get.put(Controller())` before using a new controller.  
-    - Access controllers via `Get.find<Controller>()`.  
-    - Every controller must have a corresponding **Binding file** to define its injection.  
-      - This helps identify which controllers are available for use in each route or module.  
+ ## State Management & Dependency Injection (GetX)
+
+- **Framework**: Use GetX exclusively for state, navigation, and dependency injection (DI).
+- **Binding**: Every Controller/Service must have a corresponding Binding file declaring its injection.
+- **Access**: Controllers and services must be retrieved with `Get.find<T>()` only.
+
+### Injection Rules
+1. **Core Services**
+   - Must be injected with `Get.put(Service(), permanent: true)`.
+   - Examples: `AppConfig`, `Logger`, `SecureStorage`, `ApiClient`, `AuthService`.
+   - Reason: Core services must always be available and cannot be disposed during app lifetime.
+
+2. **Feature Controllers / Non-core Services**
+   - Must be injected with `Get.lazyPut(() => Controller())`.
+   - Reason: Reduce memory footprint; instantiated only when first accessed.
+   - If controller may be disposed and reused later, enforce `fenix: true`.
+     ```dart
+     Get.lazyPut(() => OtpController(auth: Get.find()), fenix: true);
+     ```
+
+3. **Do / Don’t**
+   - ✅ Declare injections inside **Binding files** per route/module.
+   - ✅ Separate **Core services** (always alive) vs **Feature controllers** (on-demand).
+   - ❌ Never call `Get.put` inside a Widget `build()` method.
+   - ❌ Never guess or inject dependencies outside of Binding definitions.
+
+### Lifecycle Rules
+- Controllers tied to a route are automatically disposed when the route is popped.
+- Controllers registered with `fenix: true` are re-created automatically when accessed again after disposal.
+- Core services (`permanent: true`) must persist for the entire app lifetime.
+
   - **Reactive Updates:**  
     - Use `Rx` types for real-time value updates, such as `RxBool`, `RxList`, `RxInt`, etc.  
     - Use `RxStatus` to represent and manage response states (e.g., loading, success, error).  
@@ -34,7 +59,7 @@ applyTo: '**'
       - **Button:** Font size 18–20, medium/bold  
       - Set the font and size in ThemeData and on every page.  
     - **App Color Theme:**  
-      - Start with a **neutral Boot Theme (black/white)** not tied to spec or wireframe yet.  
+      - Start with a **neutral Boot Theme**
       - Define **Light** and **Dark** themes in `app_color.dart`.  
       - All colors must be declared as **semantic tokens** (e.g., `buttonBg`, `onButton`, `textFieldFill`, `toastBg`) and used via tokens only.  
       - Do not hardcode colors in widgets or tie them to IDs.  
@@ -87,19 +112,23 @@ applyTo: '**'
 
 ### 📌 Page & Controller Binding Rules
 
-- Every time a new **Page** is created, a corresponding **Controller** must be created.  
+- Every time a new **Page** is created, a corresponding **Controller** must also be created.  
 - Pages must extend `GetView<Controller>` only.  
   - Do not use `StatelessWidget` or `StatefulWidget` directly for pages.  
-  - Controller must be injected using `Get.put(Controller())`.  
-  - Access controller only via `controller` property in `GetView`.
+  - Controllers must be injected via **Binding files** (never inline in the page).  
+  - In Bindings:  
+    - **Core Services** → use `Get.put(Service(), permanent: true)`  
+    - **Page/Feature Controllers** → use `Get.lazyPut(() => Controller())` (add `fenix: true` if they need to be re-created after disposal).  
+  - Access controllers inside the page only via the `controller` property of `GetView`.  
 
 - If a page requires **multiple controllers**:  
-  - Use `Get.find<OtherController>()` **inside the main controller only**.  
-  - Do not call `Get.find` or `Get.put` inside the page.  
-  - The page should only interact with the controller bound via `GetView`.
+  - The **main controller** should call `Get.find<OtherController>()` internally.  
+  - Do not call `Get.find` or `Get.put` directly inside the page widget.  
+  - The page should only interact with its bound controller.  
 
 - Every controller must have a **Binding file** to define its injection logic.  
-  - Binding and controller may reside in the same folder.
+  - The Binding and its controller should be placed in the same folder for clarity.  
+  - Sub-controllers must also reside in the same folder as their parent controller.  
 
 ## 3. Asset & Data Management
 

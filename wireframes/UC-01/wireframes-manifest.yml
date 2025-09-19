@@ -1,0 +1,173 @@
+version: 1
+manifest_id: wireframes-uc01
+uc_id: UC-01
+base_dir: wireframes/UC-01
+
+# ให้ Agent ใช้ path ใน allowed_paths เพื่อลดการอ่านทั้งโฟลเดอร์
+allowed_paths:
+  - wireframes/UC-01/SC/*
+  - wireframes/UC-01/WG/*
+
+# บอกว่า SC บางอันคือหน้าจอเดียวกันต่าง state/tab
+screen_groups:
+  - id: register-screen
+    type: multi-tab
+    title: Register Screen
+    members:
+      - SC-02   # Tab Email (state: email)
+      - SC-03   # Tab Phone (state: phone)
+      - SC-04   # Social Google (state: google-modal)
+      - SC-05   # Social Facebook (state: facebook-modal)
+  - id: otp-screen
+    type: multi-state
+    title: OTP Screen
+    members:
+      - SC-06   # OTP entry + countdown
+      - SC-07   # Timeout → Resend
+  - id: profile-screen
+    type: multi-tab
+    title: Add New Profile
+    members:
+      - SC-09   # Tab 1 – ข้อมูลพื้นฐาน (mandatory)
+      - SC-10   # Tab 2 – ข้อมูลอื่นๆ (optional)
+
+# ไฟล์ภาพของ SC ทั้งหมด
+screens:
+  - id: SC-01
+    name: Welcome
+    path: SC/SC-01.png
+  - id: SC-02
+    name: Register by Email
+    path: SC/SC-02.png
+  - id: SC-03
+    name: Register by Phoneno
+    path: SC/SC-03.png
+  - id: SC-04
+    name: Register by Google
+    path: SC/SC-04.png
+  - id: SC-05
+    name: Register by Facebook
+    path: SC/SC-05.png
+  - id: SC-06
+    name: OTP
+    path: SC/SC-06.png
+  - id: SC-07
+    name: Resent OTP
+    path: SC/SC-07.png
+  - id: SC-08
+    name: Set Password
+    path: SC/SC-08.png
+  - id: SC-09
+    name: Add New Profile Tab1
+    path: SC/SC-09.png
+  - id: SC-10
+    name: Add New Profile Tab2
+    path: SC/SC-10.png
+  - id: SC-11
+    name: Thank You
+    path: SC/SC-11.png
+
+# ไฟล์ภาพของ WG ทั้งหมด (ใช้เพื่อ cross-check ตอน render errors/toasts/popups)
+widgets:
+  - id: WG-01
+    name: Toast – ไม่กรอกอีเมล
+    path: WG/WG-01.png
+  - id: WG-02
+    name: Toast – อีเมลผิดรูปแบบ
+    path: WG/WG-02.png
+  - id: WG-03
+    name: Toast – เคยลงทะเบียนแล้ว
+    path: WG/WG-03.png
+  - id: WG-04
+    name: Toast – เกิดข้อผิดพลาด
+    path: WG/WG-04.png
+  - id: WG-05
+    name: Toast – OTP ไม่ถูกต้อง
+    path: WG/WG-05.png
+  - id: WG-06
+    name: Toast – ไม่กรอกเบอร์โทร
+    path: WG/WG-06.png
+  - id: WG-07
+    name: Toast – เบอร์โทรไม่ถูกต้อง
+    path: WG/WG-07.png
+  - id: WG-08
+    name: Popup – PDPA Consent
+    path: WG/WG-08.png
+  - id: WG-09
+    name: Toast – ไม่ยอมรับ PDPA
+    path: WG/WG-09.png
+  - id: WG-10
+    name: Toast – รหัสผ่านไม่ผ่านเงื่อนไข
+    path: WG/WG-10.png
+  - id: WG-11
+    name: Toast – รหัสผ่านไม่ตรงกัน
+    path: WG/WG-11.png
+  - id: WG-12
+    name: Toast – เบอร์โทรศัพท์ซ้ำ (โปรไฟล์)
+    path: WG/WG-12.png
+  - id: WG-13
+    name: Popup – ยืนยัน OTP เบอร์โทร
+    path: WG/WG-13.png
+  - id: WG-14
+    name: Popup – ส่ง OTP เบอร์ใหม่
+    path: WG/WG-14.png
+  - id: WG-15
+    name: Toast – อีเมลซ้ำ (โปรไฟล์)
+    path: WG/WG-15.png
+  - id: WG-16
+    name: Toast – อัปโหลดรูปไม่ถูกต้อง
+    path: WG/WG-16.png
+  - id: WG-17
+    name: Popup – ยืนยัน OTP อีเมล
+    path: WG/WG-17.png
+  - id: WG-18
+    name: Popup – ส่ง OTP อีเมลใหม่
+    path: WG/WG-18.png
+  - id: WG-19
+    name: Toast – บันทึกสำเร็จ
+    path: WG/WG-19.png
+  - id: WG-20
+    name: Toast – โปรไฟล์ซ้ำ
+    path: WG/WG-20.png
+  - id: WG-21
+    name: Toast – ไม่กรอกข้อมูลบังคับ
+    path: WG/WG-21.png
+  - id: WG-22
+    name: Toast – วันเกิดไม่ถูกต้อง
+    path: WG/WG-22.png
+  - id: WG-23
+    name: Toast – รูปเกินจำนวน
+    path: WG/WG-23.png
+
+# ตัวช่วยให้ Agent ผูกกับ Constitution/UC ง่าย ๆ
+policies:
+  multi_state_tabs:
+    enforce: true
+    conflict_priority: [AC, UC, Wireframe, Constitution]
+  rendering:
+    require_wireframe_match: true
+    ocr_confidence_min: 0.85
+  completeness_checks:
+    field_manifest_required: true
+    order_check: true
+    button_check: true
+
+# mapping ช่วย resolve ว่า state/tab ไหนต้องใช้ SC ไหนเวลาตรวจภาพ
+state_alias:
+  register:
+    email: SC-02
+    phone: SC-03
+    google: SC-04
+    facebook: SC-05
+  otp:
+    entry: SC-06
+    resend: SC-07
+  profile:
+    basic: SC-09
+    extra: SC-10
+
+Grounding:
+- allowed_paths:
+  - wireframes/UC-01/SC/*
+  - wireframes/UC-01/WG/*
+- do_not_read_outside_allowed_paths: true
