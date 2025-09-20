@@ -154,8 +154,8 @@ WG: >
 21. **Multi-state / Multi-tab Enforcement**
 
  **Definition**
-   - Multi-state: SC-xx หลายหมายเลข ที่จริงคือหน้าจอเดียวกัน แต่ต่างกันตามเงื่อนไข (เช่น state ก่อน/หลัง timeout, state ปุ่มเปลี่ยน)
-   - Multi-tab: SC-xx หลายหมายเลข ที่จริงคือหน้าจอเดียวกัน แต่แยกเป็น Tab (เช่น Tab ข้อมูลพื้นฐาน / ข้อมูลอื่นๆ)
+   - Multi-state: SC-xx หรือ WG-xx หลายหมายเลข ที่จริงคือหน้าจอเดียวกัน แต่ต่างกันตามเงื่อนไข (เช่น state ก่อน/หลัง timeout, state ปุ่มเปลี่ยน)
+   - Multi-tab: SC-xx หรือ WG-xx หลายหมายเลข ที่จริงคือหน้าจอเดียวกัน แต่แยกเป็น Tab (เช่น Tab ข้อมูลพื้นฐาน / ข้อมูลอื่นๆ)
 
  **Agent Obligation**
    - Agent ต้อง render เป็น **1 Screen เดียว** (Single UI Container)
@@ -183,6 +183,43 @@ WG: >
  **Conflict Resolution**
    - ถ้า UC/AC บอกว่าเป็น multi-state/multi-tab → ต้องถือเป็นหน้าจอเดียว
    - ถ้า Wireframe แยกหลายรูป แต่ AC บอกว่าเป็น Tab/State → ให้ยึด AC เป็นหลัก
+## 21.1 WG Multi-State Timeline & Event Ordering (OTP Example)
+
+**Principle**
+- WG หลายรูป = **WG เดียวต่าง state** ไม่ใช่หลาย widget
+- ลำดับเหตุการณ์ต้อง deterministic: Given → When → Then
+- Owner ของ timer อยู่ที่ **WG** เอง (ไม่พึ่ง SC)
+
+**State Model (ตัวอย่าง WG-OTP-SMS)**
+- `idle_opened` : เพิ่งเปิด popup, ยังไม่มีการส่ง OTP ล่าสุด
+- `countdown`   : ส่ง OTP แล้ว รอครบเวลาจึงอนุญาตกดส่งอีกครั้ง
+- `ready`       : หมดเวลานับถอยหลัง กด "ส่งอีกครั้ง" ได้
+- `submitting`  : ผู้ใช้กด "ยืนยัน" กำลัง verify
+- `error`       : ยืนยันล้มเหลว (map ไป WG-05 ถ้า AC ระบุ)
+
+**Events**
+- `OPEN`, `SEND_OTP_SUCCESS(t)` → go `countdown(t)`
+- `TICK(1s)` ระหว่าง countdown → อัปเดตตัวเลขเวลา
+- `COUNTDOWN_DONE` → go `ready`
+- `RESEND_CLICK` ใน `ready` → trigger ส่ง OTP → on success go `countdown`
+- `CONFIRM_CLICK(code)` (เมื่อ code length ผ่านเงื่อนไข) → go `submitting`
+- `CONFIRM_SUCCESS` → CLOSE
+- `CONFIRM_FAIL` → go `error` (แล้วกลับ `ready` หรือ `countdown` ตาม AC)
+
+**CTA Rendering Rules**
+- มี **Primary CTA ได้เพียงหนึ่ง** ตาม state:
+  - `countdown` → ปุ่มยืนยัน **enabled** (ถ้า code ครบ), ปุ่มส่งอีกครั้ง **disabled + แสดงเวลานับถอยหลัง**
+  - `ready`     → ปุ่มส่งอีกครั้ง **enabled**, ปุ่มยืนยันตามเงื่อนไข code
+- ห้ามสลับปุ่ม/ข้อความจากภาพ ถ้าไม่ระบุใน AC ให้ render แต่ **disabled** (INSUFFICIENT_SPEC)
+
+## 21.2 Binding กับ SC Multi-State
+- WG state ต้องสอดคล้องกับกลุ่ม SC multi-state ปัจจุบัน (เช่น `otp-screen: SC-06 ↔ countdown`, `SC-07 ↔ ready`). Agent ต้องเรนเดอร์ภายใน **จอเดียว** และสลับ state, ไม่สร้างหลายหน้าใหม่. :contentReference[oaicite:0]{index=0}
+
+## 21.3 Source Priority (ย้ำ)
+- Behavior/ข้อความยึดตาม: **AC → UC → Wireframe → Constitution**. หาก AC ไม่กำหนด action ให้แสดง UI ตามภาพแต่ **disabled** และลงเหตุผล `INSUFFICIENT_SPEC`. :contentReference[oaicite:1]{index=1} :contentReference[oaicite:2]{index=2}
+
+## 21.4 Reporting
+- บันทึก state ปัจจุบัน, CTA ที่ enable/disable, เหตุการณ์ล่าสุด (OPEN/RESEND/CONFIRM/TICK) ใน `/reports/findings.json` ต่อเฟรมของการทดสอบ flow.
 
 22. **SC Rendering Enforcement (Strict SC Mode)**
 - เมื่อคำสั่งระบุ SC รายการใด ๆ (เช่น “Build SC-01”) → Agent ต้องเรนเดอร์ **เฉพาะ SC ที่ระบุ** เท่านั้น  

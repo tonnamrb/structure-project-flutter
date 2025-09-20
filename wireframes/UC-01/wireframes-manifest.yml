@@ -8,7 +8,7 @@ allowed_paths:
   - wireframes/UC-01/SC/*
   - wireframes/UC-01/WG/*
 
-# บอกว่า SC บางอันคือหน้าจอเดียวกันต่าง state/tab
+# กลุ่มจอ SC หน้าจอเดียวกันต่าง state/tab
 screen_groups:
   - id: register-screen
     type: multi-tab
@@ -30,6 +30,76 @@ screen_groups:
     members:
       - SC-09   # Tab 1 – ข้อมูลพื้นฐาน (mandatory)
       - SC-10   # Tab 2 – ข้อมูลอื่นๆ (optional)
+
+# ==== กลุ่ม WG แบบ multi-state ====
+widget_groups:
+  - id: wg-otp-sms
+    type: multi-state
+    title: SMS OTP Popup
+    members:
+      - WG-13   # state: countdown  (มีเวลานับถอยหลัง → "ส่งอีกครั้ง" disabled, ใช้ปุ่ม "ยืนยัน")
+      - WG-14   # state: ready      (หมดเวลา → "ส่งอีกครั้ง" enabled)
+    binds_to_screen_group: otp-screen
+    machine:
+      id: wg-otp-sms-machine
+      initial: countdown
+      states:
+        countdown:
+          cta:
+            primary: confirm        # ปุ่ม "ยืนยัน"
+            secondary:
+              - id: resend
+                enabled: false      # แสดงปุ่มแต่ disabled พร้อมตัวเลขเวลา
+          on:
+            COUNTDOWN_DONE: ready
+            CONFIRM_CLICK: submitting
+        ready:
+          cta:
+            primary: resend         # ปุ่ม "ส่งอีกครั้ง"
+            secondary:
+              - id: confirm
+                enabled: auto       # enabled เมื่อ code ครบตาม UC/AC
+          on:
+            RESEND_CLICK: countdown
+            CONFIRM_CLICK: submitting
+        submitting:
+          on:
+            CONFIRM_SUCCESS: closed
+            CONFIRM_FAIL: ready
+
+  - id: wg-otp-email
+    type: multi-state
+    title: Email OTP Popup
+    members:
+      - WG-17   # state: countdown (ยืนยันอีเมลขณะนับถอยหลัง)
+      - WG-18   # state: ready     (ส่งอีเมลใหม่ได้)
+    binds_to_screen_group: otp-screen
+    machine:
+      id: wg-otp-email-machine
+      initial: countdown
+      states:
+        countdown:
+          cta:
+            primary: confirm
+            secondary:
+              - id: resend
+                enabled: false
+          on:
+            COUNTDOWN_DONE: ready
+            CONFIRM_CLICK: submitting
+        ready:
+          cta:
+            primary: resend
+            secondary:
+              - id: confirm
+                enabled: auto
+          on:
+            RESEND_CLICK: countdown
+            CONFIRM_CLICK: submitting
+        submitting:
+          on:
+            CONFIRM_SUCCESS: closed
+            CONFIRM_FAIL: ready
 
 # ไฟล์ภาพของ SC ทั้งหมด
 screens:
@@ -67,7 +137,7 @@ screens:
     name: Thank You
     path: SC/SC-11.png
 
-# ไฟล์ภาพของ WG ทั้งหมด (ใช้เพื่อ cross-check ตอน render errors/toasts/popups)
+# ไฟล์ภาพของ WG ทั้งหมด
 widgets:
   - id: WG-01
     name: Toast – ไม่กรอกอีเมล
@@ -108,9 +178,11 @@ widgets:
   - id: WG-13
     name: Popup – ยืนยัน OTP เบอร์โทร
     path: WG/WG-13.png
+    state_tag: countdown
   - id: WG-14
     name: Popup – ส่ง OTP เบอร์ใหม่
     path: WG/WG-14.png
+    state_tag: ready
   - id: WG-15
     name: Toast – อีเมลซ้ำ (โปรไฟล์)
     path: WG/WG-15.png
@@ -120,9 +192,11 @@ widgets:
   - id: WG-17
     name: Popup – ยืนยัน OTP อีเมล
     path: WG/WG-17.png
+    state_tag: countdown
   - id: WG-18
     name: Popup – ส่ง OTP อีเมลใหม่
     path: WG/WG-18.png
+    state_tag: ready
   - id: WG-19
     name: Toast – บันทึกสำเร็จ
     path: WG/WG-19.png
